@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"MarkProjectModule1/internal/models"
+	"MarkProjectModule1/internal/service/user"
 	responsePkg "MarkProjectModule1/pkg"
 	"MarkProjectModule1/pkg/request"
 	"fmt"
@@ -20,11 +21,20 @@ func RegisterRegHandlers(router *http.ServeMux) {
 func (handler *RegHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		var payload, err = request.HandleBody[models.RegistrationRequest](&w, req)
-
 		if err != nil {
 			responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		rep := user.NewInMemoryRepository()
+		err = rep.Create(models.User{
+			Username: payload.Username,
+			Email:    payload.Email,
+		})
+		if err != nil {
+			responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+		}
+
 		fmt.Print(payload)
 		response := models.RegisterRes{
 			Success: true,
