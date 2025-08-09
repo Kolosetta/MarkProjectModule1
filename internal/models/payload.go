@@ -13,3 +13,7 @@ type CreatePostRequest struct {
 	Author string `json:"author" validate:"required"`
 	Text   string `json:"text" validate:"required"`
 }
+
+type LikePostRequest struct {
+	UserId int64 `json:"user_id" validate:"required"`
+}

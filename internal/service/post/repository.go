@@ -7,6 +7,7 @@ import (
 type Repository interface {
 	Create(post models.Post) error
 	GetList() []models.Post
+	LikePost(postId int64, userId int64) error
 }
 
 type InMemoryRepository struct {
@@ -31,4 +32,12 @@ func (rep *InMemoryRepository) Create(post models.Post) error {
 
 func (rep *InMemoryRepository) GetList() []models.Post {
 	return rep.posts
+}
+
+func (rep *InMemoryRepository) LikePost(postId int64, userId int64) error {
+	postIndex := postId - 1
+	post := rep.posts[postIndex]
+	post.Likes = append(post.Likes, userId)
+	rep.posts[postIndex] = post
+	return nil
 }
