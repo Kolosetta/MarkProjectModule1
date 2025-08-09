@@ -9,6 +9,7 @@ func main() {
 
 	router := http.NewServeMux()         //Создаем маршрутиризатор для сервера
 	handlers.RegisterRegHandlers(router) //Регистрируем в маршрутиризаторе хендлер дял ендпоинта /auth/register
+	handlers.RegisterPostHandlers(router)
 
 	//конфигурируем сервер. Назначаем роутер, котоырй будет распределять запросы
 	server := http.Server{

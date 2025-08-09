@@ -5,3 +5,9 @@ type User struct {
 	Username string
 	Email    string
 }
+
+type Post struct {
+	Id     int64
+	Author string
+	Text   string
+}

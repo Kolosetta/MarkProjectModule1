@@ -26,17 +26,15 @@ func (handler *RegHandler) Register() http.HandlerFunc {
 			return
 		}
 
-		rep := user.NewInMemoryRepository()
-		err = rep.Create(models.User{
-			Username: payload.Username,
-			Email:    payload.Email,
-		})
+		userService := user.NewService(user.GetRepository())
+		err = userService.CreateUser(payload.Username, payload.Email)
+
 		if err != nil {
 			responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
 		}
 
 		fmt.Print(payload)
-		response := models.RegisterRes{
+		response := models.ResponseBody{
 			Success: true,
 		}
 		responsePkg.MakeJsonResponse(w, response, http.StatusOK)
