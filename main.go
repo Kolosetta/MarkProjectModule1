@@ -2,12 +2,13 @@ package main
 
 import (
 	"MarkProjectModule1/internal/handlers"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func main() {
 
-	router := http.NewServeMux()         //Создаем маршрутиризатор для сервера
+	router := mux.NewRouter()            //Создаем маршрутиризатор для сервера
 	handlers.RegisterRegHandlers(router) //Регистрируем в маршрутиризаторе хендлер дял ендпоинта /auth/register
 	handlers.RegisterPostHandlers(router)
 
