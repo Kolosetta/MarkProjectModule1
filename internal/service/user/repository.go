@@ -16,10 +16,12 @@ type InMemoryRepository struct {
 	currentId int64
 }
 
-func NewInMemoryRepository() *InMemoryRepository {
-	return &InMemoryRepository{
-		users: make(map[string]models.User),
-	}
+var repoInstance = &InMemoryRepository{
+	users: make(map[string]models.User),
+}
+
+func GetRepository() *InMemoryRepository {
+	return repoInstance
 }
 
 func (rep *InMemoryRepository) Create(user models.User) error {

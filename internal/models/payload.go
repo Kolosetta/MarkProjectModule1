@@ -1,10 +1,15 @@
 package models
 
-type RegisterRes struct {
+type ResponseBody struct {
 	Success bool
 }
 
 type RegistrationRequest struct {
 	Username string `json:"username" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
+}
+
+type CreatePostRequest struct {
+	Author string `json:"author" validate:"required"`
+	Text   string `json:"text" validate:"required"`
 }
