@@ -1,6 +1,9 @@
 package user
 
-import "MarkProjectModule1/internal/models"
+import (
+	"MarkProjectModule1/internal/models"
+	"MarkProjectModule1/pkg/events"
+)
 
 type Service struct {
 	repo Repository
@@ -18,6 +21,7 @@ func (s *Service) CreateUser(username string, email string) error {
 	if err := s.repo.Create(user); err != nil {
 		return err
 	}
+	events.LogEvent("User created", user)
 	return nil
 }
 

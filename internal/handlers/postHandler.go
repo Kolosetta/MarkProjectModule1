@@ -5,7 +5,6 @@ import (
 	"MarkProjectModule1/internal/service/post"
 	responsePkg "MarkProjectModule1/pkg"
 	"MarkProjectModule1/pkg/request"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -52,9 +51,8 @@ func (handler *PostHandler) LikePost(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
 	}
-	fmt.Print(payload)
-	vars := mux.Vars(req)
-	postId, err := strconv.ParseInt(vars["id"], 10, 64)
+	queryVars := mux.Vars(req)
+	postId, err := strconv.ParseInt(queryVars["id"], 10, 64)
 
 	err = post.AddLikeAsync(postId, payload.UserId)
 
