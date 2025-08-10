@@ -2,6 +2,7 @@ package post
 
 import (
 	"MarkProjectModule1/internal/models"
+	"MarkProjectModule1/pkg/events"
 )
 
 type Service struct {
@@ -16,6 +17,7 @@ func (s *Service) CreatePost(post models.Post) error {
 	if err := s.repo.Create(post); err != nil {
 		return err
 	}
+	events.LogEvent("Post Created", post)
 	return nil
 }
 
@@ -28,5 +30,9 @@ func (s *Service) LikePost(postId int64, userId int64) error {
 	if err != nil {
 		return err
 	}
+	events.LogEvent("Like", map[string]interface{}{
+		"postId": postId,
+		"userId": userId,
+	})
 	return nil
 }

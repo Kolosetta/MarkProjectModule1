@@ -5,7 +5,6 @@ import (
 	"MarkProjectModule1/internal/service/user"
 	responsePkg "MarkProjectModule1/pkg"
 	"MarkProjectModule1/pkg/request"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -31,7 +30,6 @@ func (handler *RegHandler) Register(w http.ResponseWriter, req *http.Request) {
 		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
 	}
 
-	fmt.Print(payload)
 	response := models.ResponseBody{
 		Success: true,
 	}
