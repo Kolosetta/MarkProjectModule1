@@ -56,9 +56,10 @@ func (handler *PostHandler) LikePost(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	postId, err := strconv.ParseInt(vars["id"], 10, 64)
 
-	postService := post.NewService(post.GetRepository())
-	err = postService.LikePost(postId, payload.UserId)
+	err = post.AddLikeAsync(postId, payload.UserId)
+
+	//Если очередь переполнена
 	if err != nil {
-		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusTooManyRequests)
 	}
 }

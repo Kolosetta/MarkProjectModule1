@@ -2,6 +2,7 @@ package post
 
 import (
 	"MarkProjectModule1/internal/models"
+	"sync"
 )
 
 type Repository interface {
@@ -11,6 +12,7 @@ type Repository interface {
 }
 
 type InMemoryRepository struct {
+	mu        sync.RWMutex
 	posts     []models.Post
 	currentId int64
 }
@@ -24,6 +26,8 @@ func GetRepository() *InMemoryRepository {
 }
 
 func (rep *InMemoryRepository) Create(post models.Post) error {
+	rep.mu.Lock()
+	defer rep.mu.Unlock()
 	rep.currentId++
 	post.Id = rep.currentId
 	rep.posts = append(rep.posts, post)
@@ -35,6 +39,8 @@ func (rep *InMemoryRepository) GetList() []models.Post {
 }
 
 func (rep *InMemoryRepository) LikePost(postId int64, userId int64) error {
+	rep.mu.Lock()
+	defer rep.mu.Unlock()
 	postIndex := postId - 1
 	post := rep.posts[postIndex]
 	post.Likes = append(post.Likes, userId)

@@ -1,6 +1,8 @@
 package post
 
-import "MarkProjectModule1/internal/models"
+import (
+	"MarkProjectModule1/internal/models"
+)
 
 type Service struct {
 	repo Repository

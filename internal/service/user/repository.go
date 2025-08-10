@@ -3,6 +3,7 @@ package user
 import (
 	"MarkProjectModule1/internal/models"
 	"errors"
+	"sync"
 )
 
 type Repository interface {
@@ -12,6 +13,7 @@ type Repository interface {
 }
 
 type InMemoryRepository struct {
+	mu        sync.RWMutex
 	users     map[string]models.User
 	currentId int64
 }
@@ -25,6 +27,8 @@ func GetRepository() *InMemoryRepository {
 }
 
 func (rep *InMemoryRepository) Create(user models.User) error {
+	rep.mu.Lock()
+	defer rep.mu.Unlock()
 	if _, exists := rep.users[user.Username]; exists {
 		return errors.New("user already exists")
 	}
@@ -36,6 +40,8 @@ func (rep *InMemoryRepository) Create(user models.User) error {
 }
 
 func (rep *InMemoryRepository) Get(username string) (models.User, error) {
+	rep.mu.Lock()
+	defer rep.mu.Unlock()
 	if user, exists := rep.users[username]; exists {
 		return user, nil
 	}
@@ -43,6 +49,8 @@ func (rep *InMemoryRepository) Get(username string) (models.User, error) {
 }
 
 func (rep *InMemoryRepository) GetList() []models.User {
+	rep.mu.Lock()
+	defer rep.mu.Unlock()
 	result := make([]models.User, len(rep.users))
 	for _, user := range rep.users {
 		result = append(result, user)
