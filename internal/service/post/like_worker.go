@@ -25,8 +25,6 @@ func StartLikeWorker(s *Service) {
 }
 
 func AddLikeAsync(postId, userId int64) error {
-	likeChan <- LikeTask{postId, userId}
-
 	select {
 	case likeChan <- LikeTask{postId, userId}:
 		return nil

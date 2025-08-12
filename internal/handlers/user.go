@@ -29,6 +29,7 @@ func (handler *RegHandler) Register(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	response := models.ResponseBody{

@@ -35,6 +35,7 @@ func (handler *PostHandler) CreatePost(w http.ResponseWriter, req *http.Request)
 	})
 	if err != nil {
 		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	response := models.ResponseBody{Success: true}
@@ -50,6 +51,7 @@ func (handler *PostHandler) LikePost(w http.ResponseWriter, req *http.Request) {
 	var payload, err = request.HandleBody[models.LikePostRequest](&w, req)
 	if err != nil {
 		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	queryVars := mux.Vars(req)
 	postId, err := strconv.ParseInt(queryVars["id"], 10, 64)
