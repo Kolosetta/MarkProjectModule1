@@ -10,11 +10,13 @@ import (
 	"strconv"
 )
 
-type PostHandler struct{}
+type PostHandler struct {
+	service *post.Service
+}
 
 // Установка хендлеров в преданный маршрутиризатор
-func RegisterPostHandlers(router *mux.Router) {
-	handler := PostHandler{}
+func RegisterPostHandlers(router *mux.Router, service *post.Service) {
+	handler := PostHandler{service: service}
 	router.HandleFunc("/posts", handler.CreatePost).Methods("POST")
 	router.HandleFunc("/posts", handler.GetPostList).Methods("GET")
 	router.HandleFunc("/posts/{id}/like", handler.LikePost).Methods("POST")
@@ -27,8 +29,7 @@ func (handler *PostHandler) CreatePost(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	postService := post.NewService(post.GetRepository())
-	err = postService.CreatePost(models.Post{
+	err = handler.service.CreatePost(models.Post{
 		Author: payload.Author,
 		Text:   payload.Text,
 	})
@@ -41,8 +42,7 @@ func (handler *PostHandler) CreatePost(w http.ResponseWriter, req *http.Request)
 }
 
 func (handler *PostHandler) GetPostList(w http.ResponseWriter, req *http.Request) {
-	postService := post.NewService(post.GetRepository())
-	resultList := postService.GetPostList()
+	resultList := handler.service.GetPostList()
 	responsePkg.MakeJsonResponse(w, resultList, http.StatusOK)
 }
 

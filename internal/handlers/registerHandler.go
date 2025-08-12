@@ -9,10 +9,12 @@ import (
 	"net/http"
 )
 
-type RegHandler struct{}
+type RegHandler struct {
+	service *user.Service
+}
 
-func RegisterRegHandlers(router *mux.Router) {
-	handler := RegHandler{}
+func RegisterRegHandlers(router *mux.Router, service *user.Service) {
+	handler := RegHandler{service: service}
 	router.HandleFunc("/auth/register", handler.Register).Methods("POST")
 }
 
@@ -23,8 +25,7 @@ func (handler *RegHandler) Register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	userService := user.NewService(user.GetRepository())
-	err = userService.CreateUser(payload.Username, payload.Email)
+	err = handler.service.CreateUser(payload.Username, payload.Email)
 
 	if err != nil {
 		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
