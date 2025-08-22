@@ -1,0 +1,11 @@
+services:
+  postgres:
+    container_name: mark_project_postgres_go
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_pass
+      PGDATA: /data/postgres
+
+    ports:
+      - "5432:5432"

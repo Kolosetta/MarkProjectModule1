@@ -4,8 +4,10 @@ import (
 	"MarkProjectModule1/internal/handlers"
 	"MarkProjectModule1/internal/service/post"
 	"MarkProjectModule1/internal/service/user"
+	"MarkProjectModule1/pkg/db"
 	"MarkProjectModule1/pkg/events"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	_ "net/http/pprof"
 )
@@ -15,9 +17,15 @@ func main() {
 	//Запуск профилирования на отдельном порту
 	events.StartLogger()
 
-	router := mux.NewRouter()                                                    //Создаем маршрутиризатор для сервера
-	handlers.RegisterRegHandlers(router, user.NewService(user.GetRepository()))  //Регистрируем в маршрутиризаторе хендлер дял ендпоинта /auth/register
-	handlers.RegisterPostHandlers(router, post.NewService(post.GetRepository())) // передаем внутрь инстансы сервисов
+	router := mux.NewRouter() //Создаем маршрутиризатор для сервера
+	handlers.RegisterRegHandlers(router, user.NewService(user.GetRepository()))
+
+	pool, err := db.NewPostgresPool()
+	if err != nil {
+		log.Fatalf("failed to connect db: %v", err)
+	}
+	//Регистрируем в маршрутиризаторе хендлер дял ендпоинта /auth/register
+	handlers.RegisterPostHandlers(router, post.NewService(post.NewPostgresRepository(pool))) // передаем внутрь инстансы сервисов
 
 	//Запускаем нвоый воркер, который читает очередь лайков
 	postService := post.NewService(post.GetRepository())
