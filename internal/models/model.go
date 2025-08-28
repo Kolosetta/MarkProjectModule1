@@ -10,5 +10,5 @@ type Post struct {
 	Id     int64
 	Author string
 	Text   string
-	Likes  []int64
+	Likes  int64
 }

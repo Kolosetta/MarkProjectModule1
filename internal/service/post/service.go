@@ -22,7 +22,11 @@ func (s *Service) CreatePost(post models.Post) error {
 }
 
 func (s *Service) GetPostList() []models.Post {
-	return s.repo.GetList()
+	var list, err = s.repo.GetList()
+	if err != nil {
+		return nil
+	}
+	return list
 }
 
 func (s *Service) LikePost(postId int64, userId int64) error {
