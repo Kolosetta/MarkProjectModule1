@@ -25,10 +25,10 @@ func main() {
 		log.Fatalf("failed to connect db: %v", err)
 	}
 	//Регистрируем в маршрутиризаторе хендлер дял ендпоинта /auth/register
-	handlers.RegisterPostHandlers(router, post.NewService(post.NewPostgresRepository(pool))) // передаем внутрь инстансы сервисов
+	var postService = post.NewService(post.NewPostgresRepository(pool))
+	handlers.RegisterPostHandlers(router, postService) // передаем внутрь инстансы сервисов
 
 	//Запускаем нвоый воркер, который читает очередь лайков
-	postService := post.NewService(post.GetRepository())
 	post.StartLikeWorker(postService)
 
 	events.StartLogger()
