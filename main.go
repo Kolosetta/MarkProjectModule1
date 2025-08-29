@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	_ "net/http/pprof"
 )
 
 func main() {
@@ -18,7 +17,6 @@ func main() {
 	events.StartLogger()
 
 	router := mux.NewRouter() //Создаем маршрутиризатор для сервера
-	handlers.RegisterRegHandlers(router, user.NewService(user.GetRepository()))
 
 	pool, err := db.NewPostgresPool()
 	if err != nil {
@@ -28,7 +26,10 @@ func main() {
 	var postService = post.NewService(post.NewPostgresRepository(pool))
 	handlers.RegisterPostHandlers(router, postService) // передаем внутрь инстансы сервисов
 
-	//Запускаем нвоый воркер, который читает очередь лайков
+	var userService = user.NewService(user.NewPostgresRepository(pool))
+	handlers.RegisterRegHandlers(router, userService)
+
+	//Запускаем новый воркер, который читает очередь лайков
 	post.StartLikeWorker(postService)
 
 	events.StartLogger()

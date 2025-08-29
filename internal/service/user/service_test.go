@@ -8,7 +8,7 @@ import (
 type mockRepository struct {
 	createMockFunc  func(u models.User) error
 	GetMockFunc     func(username string) (models.User, error)
-	GetListMockFunc func() []models.User
+	GetListMockFunc func() ([]models.User, error)
 }
 
 func (m *mockRepository) Create(u models.User) error {
@@ -17,7 +17,7 @@ func (m *mockRepository) Create(u models.User) error {
 func (m *mockRepository) Get(username string) (models.User, error) {
 	return m.GetMockFunc(username)
 }
-func (m *mockRepository) GetList() []models.User {
+func (m *mockRepository) GetList() ([]models.User, error) {
 	return m.GetListMockFunc()
 }
 
@@ -43,16 +43,20 @@ func TestCreateUser_Success(t *testing.T) {
 func TestGetList_Success(t *testing.T) {
 	// Мокаем репозиторий
 	repo := &mockRepository{
-		GetListMockFunc: func() []models.User {
+		GetListMockFunc: func() ([]models.User, error) {
 			return []models.User{
 				{Username: "Igor222", Email: "igor@mail.ru"},
 				{Username: "Ivan", Email: "ivan@gmail.com"},
-			}
+			}, nil
 		},
 	}
 
 	service := NewService(repo)
-	users := service.GetUsersList()
+	users, err := service.GetUsersList()
+
+	if err != nil {
+		t.Error("unexpected error")
+	}
 
 	if len(users) != 2 {
 		t.Errorf("unexpected users: %+v", users)

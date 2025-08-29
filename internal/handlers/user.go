@@ -16,6 +16,8 @@ type RegHandler struct {
 func RegisterRegHandlers(router *mux.Router, service *user.Service) {
 	handler := RegHandler{service: service}
 	router.HandleFunc("/auth/register", handler.Register).Methods("POST")
+	router.HandleFunc("/user/{username}", handler.GetUser).Methods("GET")
+	router.HandleFunc("/users", handler.GetUsersList).Methods("GET")
 }
 
 func (handler *RegHandler) Register(w http.ResponseWriter, req *http.Request) {
@@ -36,4 +38,26 @@ func (handler *RegHandler) Register(w http.ResponseWriter, req *http.Request) {
 		Success: true,
 	}
 	responsePkg.MakeJsonResponse(w, response, http.StatusOK)
+}
+
+func (handler *RegHandler) GetUser(w http.ResponseWriter, req *http.Request) {
+	var queryVars = mux.Vars(req)
+	username := queryVars["username"]
+	userObj, err := handler.service.GetUser(username)
+
+	if err != nil {
+		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	responsePkg.MakeJsonResponse(w, userObj, http.StatusOK)
+
+}
+
+func (handler *RegHandler) GetUsersList(w http.ResponseWriter, req *http.Request) {
+	users, err := handler.service.GetUsersList()
+	if err != nil {
+		responsePkg.MakeJsonResponse(w, err.Error(), http.StatusBadRequest)
+	}
+	responsePkg.MakeJsonResponse(w, users, http.StatusOK)
 }

@@ -29,7 +29,7 @@ func (s *Service) GetUser(username string) (models.User, error) {
 	return s.repo.Get(username)
 }
 
-func (s *Service) GetUsersList() []models.User {
+func (s *Service) GetUsersList() ([]models.User, error) {
 	return s.repo.GetList()
 
 }

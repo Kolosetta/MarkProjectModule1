@@ -49,7 +49,6 @@ func (rep *PostgresRepository) GetList() ([]models.Post, error) {
 
 func (rep *PostgresRepository) LikePost(postId int64, userId int64) error {
 	//TODO: добавить транзакцию, оборачивающую это все
-	//TODO: Добавить в таблицу составной первичный ключ, чтобы комбинации лайк/пост не повторялись
 	query, args, err := rep.psql.
 		Insert("post_likes").
 		Columns("post_id", "user_id").
@@ -69,6 +68,7 @@ func (rep *PostgresRepository) LikePost(postId int64, userId int64) error {
 }
 
 func (rep *PostgresRepository) Create(post models.Post) error {
+	//TODO: добавить наружу метода возврат индекса присвоенного записи
 	var postId int64
 	query, args, err := rep.psql.
 		Insert("posts").
