@@ -16,13 +16,17 @@ func main() {
 	//Запуск профилирования на отдельном порту
 	events.StartLogger()
 
-	router := mux.NewRouter() //Создаем маршрутиризатор для сервера
+	//Создаем маршрутиризатор для сервера
+	router := mux.NewRouter()
 
+	// --- Подключение к Postgres ---
 	pool, err := db.NewPostgresPool()
 	if err != nil {
 		log.Fatalf("failed to connect db: %v", err)
 	}
-	//Регистрируем в маршрутиризаторе хендлер дял ендпоинта /auth/register
+	defer pool.Close()
+
+	//Создаем сервисы, регистрируем хендлеры
 	var postService = post.NewService(post.NewPostgresRepository(pool))
 	handlers.RegisterPostHandlers(router, postService) // передаем внутрь инстансы сервисов
 
