@@ -1,12 +1,14 @@
 services:
-  app:
-    build: .
-    ports:
-      - "8081:8081"
-    depends_on:
-      - postgres
-    env_file:
-      - .env
+#  app:
+#    build: .
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - postgres
+#    env_file:
+#      - .env
+#    environment:
+#      APP_ENV: docker
 
   postgres:
     container_name: mark_project_postgres_go

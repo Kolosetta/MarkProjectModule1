@@ -11,7 +11,16 @@ import (
 func NewPostgresPool() (*pgxpool.Pool, error) {
 	err := godotenv.Load() //Загружает .env файл в программу
 	//TODO: переписать получение кредов на нормальное
-	dsn := os.Getenv("DATABASE_URL")
+
+	env := os.Getenv("APP_ENV") // "local" или "docker"
+	var dsn string
+	switch env {
+	case "docker":
+		dsn = os.Getenv("DATABASE_URL_DOCKER")
+	default:
+		dsn = os.Getenv("DATABASE_URL_LOCAL")
+	}
+	//dsn := os.Getenv("DATABASE_URL")
 	config, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse config: %w", err)

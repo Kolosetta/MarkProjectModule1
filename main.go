@@ -36,8 +36,6 @@ func main() {
 	//Запускаем новый воркер, который читает очередь лайков
 	post.StartLikeWorker(postService)
 
-	events.StartLogger()
-
 	//конфигурируем сервер. Назначаем роутер, котоырй будет распределять запросы
 	server := http.Server{
 		Addr:    ":8081",
