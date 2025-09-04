@@ -20,8 +20,6 @@ func NewPostgresRepository(db *pgxpool.Pool) *PostgresRepository {
 }
 
 func (rep PostgresRepository) Create(user models.User) error {
-	//TODO: добавить наружу метода возврат индекса присвоенного записи
-	var userId int64
 	query, args, err := rep.psql.
 		Insert("users").
 		Columns("username", "email").
@@ -31,7 +29,7 @@ func (rep PostgresRepository) Create(user models.User) error {
 		return err
 	}
 
-	err = rep.db.QueryRow(context.Background(), query, args...).Scan(&userId)
+	_, err = rep.db.Exec(context.Background(), query, args...)
 	if err != nil {
 		return err
 	}
